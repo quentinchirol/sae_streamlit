@@ -184,10 +184,10 @@ Ces fichiers décrivent le **contrat cible**. Les noms et colonnes des fichiers 
 
 | Membre | Responsabilité principale | Contribution transverse |
 |---|---|---|
-| **Personne A — [Prénom Nom]** | Acquisition, nettoyage et intégration **Insee Population + BPE** | Audit des jointures, documentation des sources |
-| **Personne B — [Prénom Nom]** | Intégration **DREES-APL**, indicateurs et analyses statistiques | Interprétation des résultats et limites |
-| **Personne C — [Prénom Nom]** | Cartographie, visualisations, design et expérience utilisateur | Contrôle du GeoJSON et du rendu graphique |
-| **Personne D — [Prénom Nom]** | Architecture Streamlit, interactions, intégration, packaging | Tests transversaux, CI et reproductibilité |
+| **Personne A — Imane** | Acquisition, nettoyage et intégration **Insee Population + BPE** | Audit des jointures, documentation des sources |
+| **Personne B — Quentin** | Intégration **DREES-APL**, indicateurs et analyses statistiques | Interprétation des résultats et limites |
+| **Personne C — Deonna** | Cartographie, visualisations, design et expérience utilisateur | Contrôle du GeoJSON et du rendu graphique |
+| **Personne D —  Alexan** | Architecture Streamlit, interactions, intégration, packaging | Tests transversaux, CI et reproductibilité |
 
 **Principe d'équité :** chaque membre développe un bloc identifiable, réalise ses propres tests, participe à l'intégration et prépare sa partie de l'oral. Le PowerPoint, le README final et la répétition sont des **responsabilités collectives**.
 

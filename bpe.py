@@ -57,7 +57,6 @@ def compter_lieux(bpe):
 
 def main():
     """Enregistre les comptages BPE et la liste des départements couverts."""
-    RESULTATS.mkdir(exist_ok=True)
     bpe = lire_bpe()
     offre, couverture, nombre = compter_lieux(bpe)
     offre.to_csv(RESULTATS / "comptages_bpe.csv", index=False)

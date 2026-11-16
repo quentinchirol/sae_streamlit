@@ -336,6 +336,153 @@ def afficher_relations_territoriales(df_brut: pd.DataFrame, filtres: dict) -> No
         limite="Association statistique transversale uniquement : aucune conclusion causale autorisée.",
     )
 
+def afficher_synthese_statique(df_brut: pd.DataFrame) -> None:
+    """Page 06 : Synthèse nationale figée (100 départements) avec analyses commentées."""
+    st.title("06 · Synthèse et analyses nationales")
+    st.caption(
+        "Vue de référence sur l'ensemble du territoire (100 départements) — "
+        "les graphiques ci-dessous restent fixes quels que soient les filtres latéraux."
+    )
+
+    df_pop = df_brut.drop_duplicates("code_dep").copy()
+    df_mg = df_brut[df_brut["profession"] == "Médecin généraliste"].copy()
+
+    # Calculs dynamiques sur le périmètre national complet (insensibles aux filtres)
+    med_conc = df_pop["pct_population_top_10pct_communes"].median()
+    top_dep = df_pop.sort_values("pct_population_top_10pct_communes", ascending=False).iloc[0]
+    bas_dep = df_pop.sort_values("pct_population_top_10pct_communes", ascending=True).iloc[0]
+
+    stats_mg_tout = calculer_correlations(df_mg, "pct_population_top_10pct_communes", "densite_100k")
+    stats_mg_sans_75 = calculer_correlations(
+        df_mg[df_mg["code_dep"] != "75"],
+        "pct_population_top_10pct_communes",
+        "densite_100k",
+    )
+    stats_bpe_apl = calculer_correlations(df_mg, "densite_100k", "apl_2024")
+
+    # --- BLOC 1 : AXE A1 (DÉMOGRAPHIE) ---
+    st.subheader("1. Structure démographique : forte polarisation communale (Insee 2023)")
+    col_g1, col_t1 = st.columns([1.45, 1], vertical_alignment="center")
+    with col_g1:
+        st.plotly_chart(
+            fig_classement_barres(
+                df_pop,
+                "pct_population_top_10pct_communes",
+                "Extrêmes de concentration démographique (France entière)",
+                "Part de population dans les 10 % de communes les plus peuplées (%)",
+                dep_focus="75",
+                est_pct=True,
+            ),
+            use_container_width=True,
+        )
+    with col_t1:
+        _afficher_encart_interpretation(
+            observation=(
+                "La répartition de la population oppose les départements dominés par une ville-centre "
+                "aux départements multipolaires de petite couronne."
+            ),
+            chiffre=(
+                f"Médiane nationale de {med_conc:.1f} % ({top_dep['nom_dep']} à "
+                f"{top_dep['pct_population_top_10pct_communes']:.1f} % contre {bas_dep['nom_dep']} à "
+                f"{bas_dep['pct_population_top_10pct_communes']:.1f} %)."
+            ),
+            interpretation=(
+                "Paris constitue un cas limite à 100 % après regroupement de ses 20 arrondissements, "
+                "ce qui impose de tester sa sensibilité dans les corrélations."
+            ),
+            limite="Indicateur basé sur le découpage communal administratif et non sur la densité au km².",
+        )
+
+    st.divider()
+
+    # --- BLOC 2 : AXE A2 (OFFRE PAR PROFESSION) ---
+    st.subheader("2. Offre de soins : disparités selon la profession (BPE 2025)")
+    col_g2, col_t2 = st.columns([1.45, 1], vertical_alignment="center")
+    with col_g2:
+        st.plotly_chart(
+            fig_boxplot_professions(df_brut, "Toutes les régions"),
+            use_container_width=True,
+        )
+    with col_t2:
+        _afficher_encart_interpretation(
+            observation=(
+                "Les niveaux de densité et l'amplitude des écarts entre départements varient "
+                "nettement d'une profession à l'autre."
+            ),
+            chiffre=(
+                f"Sur 100 départements, les infirmiers présentent la dispersion la plus élevée "
+                f"tandis que les chirurgiens-dentistes affichent une médiane de "
+                f"{df_brut[df_brut['profession'] == 'Chirurgien-dentiste']['densite_100k'].median():.1f} lieux / 100k hab."
+            ),
+            interpretation=(
+                "Une analyse agrégée toutes professions confondues masquerait des logiques "
+                "d'implantation propres à chaque spécialité."
+            ),
+            limite="La BPE dénombre des lieux d'exercice libéral et non des effectifs en temps plein.",
+        )
+
+    st.divider()
+
+    # --- BLOC 3 : AXE A3 (BPE VS APL) ---
+    st.subheader("3. Densité brute vs accessibilité réelle : Médecins généralistes")
+    col_g3, col_t3 = st.columns([1.45, 1], vertical_alignment="center")
+    with col_g3:
+        st.plotly_chart(
+            fig_confrontation_bpe_apl(df_mg, dep_focus="75"),
+            use_container_width=True,
+        )
+    with col_t3:
+        _afficher_encart_interpretation(
+            observation=(
+                "Une relation positive se dégage entre densité de cabinets (BPE) et accessibilité (APL), "
+                "mais plusieurs départements s'écartent de la diagonale."
+            ),
+            chiffre=(
+                f"Corrélation de rang Spearman ρ = {stats_bpe_apl['spearman']:.2f} "
+                f"(n = {stats_bpe_apl['n']} départements, profession : Médecin généraliste)."
+            ),
+            interpretation=(
+                "À densité BPE égale, l'APL varie selon l'offre des communes voisines, le volume "
+                "d'activité des praticiens et la structure par âge des habitants."
+            ),
+            limite="Les deux indicateurs n'ont pas la même unité et ne peuvent pas être soustraits.",
+        )
+
+    st.divider()
+
+    # --- BLOC 4 : AXE A4 (PROBLÉMATIQUE CENTRALE) ---
+    st.subheader("4. Réponse à la problématique : concentration et offre de soins")
+    col_g4, col_t4 = st.columns([1.45, 1], vertical_alignment="center")
+    with col_g4:
+        st.plotly_chart(
+            fig_nuage_territorial(
+                df_mg,
+                col_x="pct_population_top_10pct_communes",
+                col_y="densite_100k",
+                label_x="Part de population dans les 10 % de communes les plus peuplées (%)",
+                label_y="Densité BPE 2025 — Médecin généraliste (lieux / 100k hab.)",
+                titre="Concentration démographique vs Densité BPE (100 départements)",
+                dep_focus="Tous",
+                droite_tendance=True,
+            ),
+            use_container_width=True,
+        )
+    with col_t4:
+        _afficher_encart_interpretation(
+            observation=(
+                "L'association linéaire entre concentration communale et densité médicale reste "
+                "modérée à l'échelle départementale."
+            ),
+            chiffre=(
+                f"Spearman ρ = {stats_mg_tout['spearman']:.2f} sur 100 départements "
+                f"(ρ = {stats_mg_sans_75['spearman']:.2f} hors Paris, n = {stats_mg_sans_75['n']})."
+            ),
+            interpretation=(
+                "La stabilité du coefficient sans Paris confirme que la tendance globale n'est pas "
+                "artificiellement tirée par la capitale."
+            ),
+            limite="Association statistique transversale : aucune relation de causalité démontrée.",
+        )
 
 def afficher_methodologie() -> None:
     """Page 06 : Documentation méthodologique, sources et limites."""

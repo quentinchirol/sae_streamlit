@@ -10,6 +10,7 @@ from src.ui.pages import (
     afficher_offre_soins,
     afficher_population,
     afficher_relations_territoriales,
+    afficher_synthese_statique,
     afficher_vue_ensemble,
 )
 from src.ui.prototype_data import PALETTE, charger_donnees_ui
@@ -32,7 +33,6 @@ def injecter_style_global() -> None:
             border-left: 4px solid {PALETTE["turquoise"]};
             padding: 14px 18px;
             border-radius: 6px;
-            margin-top: 12px;
             line-height: 1.5;
         }}
         </style>
@@ -52,14 +52,22 @@ def initialiser_session_state() -> None:
         }
 
 
-def afficher_barre_laterale(df_brut, info_source: str, afficher_filtres: bool) -> None:
+def afficher_barre_laterale(df_brut, info_source: str, url_page_active: str) -> None:
     """Affiche le formulaire de filtres groupés (st.form) dans la barre latérale."""
     with st.sidebar:
         st.markdown("## 🩺 SantéScope")
         st.caption("Population, territoires et offre de soins")
         st.info(f"Données actives : {info_source}", icon="📂")
 
-        if not afficher_filtres:
+        if url_page_active == "synthese-analyses":
+            st.warning(
+                "Onglet statique : les graphiques sont figés sur les 100 départements "
+                "et ignorent les filtres.",
+                icon="🔒",
+            )
+            return
+
+        if url_page_active == "methodologie":
             st.caption("Aucun filtre n'est requis sur la page Méthodologie.")
             return
 
@@ -155,8 +163,14 @@ def main() -> None:
             url_path="relations-territoriales",
         ),
         st.Page(
+            lambda: afficher_synthese_statique(df_brut),
+            title="06 · Synthèse & Analyses",
+            icon="📊",
+            url_path="synthese-analyses",
+        ),
+        st.Page(
             afficher_methodologie,
-            title="06 · Méthodologie",
+            title="07 · Méthodologie",
             icon="📚",
             url_path="methodologie",
         ),
@@ -166,7 +180,7 @@ def main() -> None:
     afficher_barre_laterale(
         df_brut,
         info_source=info_source,
-        afficher_filtres=(page_active.url_path != "methodologie"),
+        url_page_active=page_active.url_path,
     )
     page_active.run()
 

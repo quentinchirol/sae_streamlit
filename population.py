@@ -5,7 +5,7 @@ import math
 import pandas as pd
 
 DOSSIER = Path(__file__).resolve().parent
-DONNEES = DOSSIER / "donnees"
+DONNEES = DOSSIER / "data"
 RESULTATS = DOSSIER / "resultats"
 
 

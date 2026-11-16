@@ -1,0 +1,405 @@
+code_dep,profession,nb_lieux
+01,Chirurgien-dentiste,325
+01,Infirmier,902
+01,Kinésithérapeute,608
+01,Médecin généraliste,450
+02,Chirurgien-dentiste,230
+02,Infirmier,887
+02,Kinésithérapeute,321
+02,Médecin généraliste,370
+03,Chirurgien-dentiste,179
+03,Infirmier,623
+03,Kinésithérapeute,386
+03,Médecin généraliste,267
+04,Chirurgien-dentiste,102
+04,Infirmier,393
+04,Kinésithérapeute,272
+04,Médecin généraliste,168
+05,Chirurgien-dentiste,102
+05,Infirmier,331
+05,Kinésithérapeute,431
+05,Médecin généraliste,201
+06,Chirurgien-dentiste,1221
+06,Infirmier,2683
+06,Kinésithérapeute,2330
+06,Médecin généraliste,1551
+07,Chirurgien-dentiste,159
+07,Infirmier,669
+07,Kinésithérapeute,421
+07,Médecin généraliste,262
+08,Chirurgien-dentiste,110
+08,Infirmier,458
+08,Kinésithérapeute,313
+08,Médecin généraliste,192
+09,Chirurgien-dentiste,85
+09,Infirmier,420
+09,Kinésithérapeute,286
+09,Médecin généraliste,146
+10,Chirurgien-dentiste,148
+10,Infirmier,374
+10,Kinésithérapeute,253
+10,Médecin généraliste,210
+11,Chirurgien-dentiste,244
+11,Infirmier,935
+11,Kinésithérapeute,630
+11,Médecin généraliste,321
+12,Chirurgien-dentiste,159
+12,Infirmier,720
+12,Kinésithérapeute,427
+12,Médecin généraliste,243
+13,Chirurgien-dentiste,1896
+13,Infirmier,5756
+13,Kinésithérapeute,4527
+13,Médecin généraliste,2668
+14,Chirurgien-dentiste,328
+14,Infirmier,875
+14,Kinésithérapeute,809
+14,Médecin généraliste,695
+15,Chirurgien-dentiste,73
+15,Infirmier,338
+15,Kinésithérapeute,166
+15,Médecin généraliste,148
+16,Chirurgien-dentiste,145
+16,Infirmier,449
+16,Kinésithérapeute,271
+16,Médecin généraliste,221
+17,Chirurgien-dentiste,421
+17,Infirmier,1077
+17,Kinésithérapeute,1016
+17,Médecin généraliste,737
+18,Chirurgien-dentiste,120
+18,Infirmier,360
+18,Kinésithérapeute,227
+18,Médecin généraliste,160
+19,Chirurgien-dentiste,118
+19,Infirmier,601
+19,Kinésithérapeute,312
+19,Médecin généraliste,185
+21,Chirurgien-dentiste,286
+21,Infirmier,537
+21,Kinésithérapeute,843
+21,Médecin généraliste,609
+22,Chirurgien-dentiste,328
+22,Infirmier,1037
+22,Kinésithérapeute,580
+22,Médecin généraliste,456
+23,Chirurgien-dentiste,30
+23,Infirmier,321
+23,Kinésithérapeute,107
+23,Médecin généraliste,80
+24,Chirurgien-dentiste,191
+24,Infirmier,834
+24,Kinésithérapeute,404
+24,Médecin généraliste,293
+25,Chirurgien-dentiste,306
+25,Infirmier,652
+25,Kinésithérapeute,598
+25,Médecin généraliste,544
+26,Chirurgien-dentiste,320
+26,Infirmier,1056
+26,Kinésithérapeute,707
+26,Médecin généraliste,418
+27,Chirurgien-dentiste,206
+27,Infirmier,585
+27,Kinésithérapeute,392
+27,Médecin généraliste,367
+28,Chirurgien-dentiste,166
+28,Infirmier,386
+28,Kinésithérapeute,241
+28,Médecin généraliste,223
+29,Chirurgien-dentiste,588
+29,Infirmier,1951
+29,Kinésithérapeute,1309
+29,Médecin généraliste,996
+2A,Chirurgien-dentiste,134
+2A,Infirmier,545
+2A,Kinésithérapeute,366
+2A,Médecin généraliste,210
+2B,Chirurgien-dentiste,109
+2B,Infirmier,740
+2B,Kinésithérapeute,389
+2B,Médecin généraliste,180
+30,Chirurgien-dentiste,501
+30,Infirmier,1935
+30,Kinésithérapeute,1225
+30,Médecin généraliste,625
+31,Chirurgien-dentiste,1293
+31,Infirmier,2242
+31,Kinésithérapeute,2809
+31,Médecin généraliste,1528
+32,Chirurgien-dentiste,118
+32,Infirmier,403
+32,Kinésithérapeute,251
+32,Médecin généraliste,173
+33,Chirurgien-dentiste,1221
+33,Infirmier,3235
+33,Kinésithérapeute,3051
+33,Médecin généraliste,2232
+34,Chirurgien-dentiste,1029
+34,Infirmier,2624
+34,Kinésithérapeute,3077
+34,Médecin généraliste,1434
+35,Chirurgien-dentiste,724
+35,Infirmier,1341
+35,Kinésithérapeute,1672
+35,Médecin généraliste,1051
+36,Chirurgien-dentiste,68
+36,Infirmier,311
+36,Kinésithérapeute,157
+36,Médecin généraliste,129
+37,Chirurgien-dentiste,288
+37,Infirmier,621
+37,Kinésithérapeute,685
+37,Médecin généraliste,626
+38,Chirurgien-dentiste,742
+38,Infirmier,1978
+38,Kinésithérapeute,2048
+38,Médecin généraliste,1264
+39,Chirurgien-dentiste,112
+39,Infirmier,319
+39,Kinésithérapeute,239
+39,Médecin généraliste,228
+40,Chirurgien-dentiste,289
+40,Infirmier,879
+40,Kinésithérapeute,932
+40,Médecin généraliste,491
+41,Chirurgien-dentiste,128
+41,Infirmier,386
+41,Kinésithérapeute,261
+41,Médecin généraliste,233
+42,Chirurgien-dentiste,360
+42,Infirmier,1538
+42,Kinésithérapeute,951
+42,Médecin généraliste,715
+43,Chirurgien-dentiste,115
+43,Infirmier,536
+43,Kinésithérapeute,262
+43,Médecin généraliste,238
+44,Chirurgien-dentiste,911
+44,Infirmier,1287
+44,Kinésithérapeute,2134
+44,Médecin généraliste,1419
+45,Chirurgien-dentiste,286
+45,Infirmier,642
+45,Kinésithérapeute,639
+45,Médecin généraliste,436
+46,Chirurgien-dentiste,89
+46,Infirmier,417
+46,Kinésithérapeute,230
+46,Médecin généraliste,138
+47,Chirurgien-dentiste,141
+47,Infirmier,622
+47,Kinésithérapeute,345
+47,Médecin généraliste,202
+48,Chirurgien-dentiste,37
+48,Infirmier,157
+48,Kinésithérapeute,107
+48,Médecin généraliste,61
+49,Chirurgien-dentiste,396
+49,Infirmier,800
+49,Kinésithérapeute,935
+49,Médecin généraliste,842
+50,Chirurgien-dentiste,191
+50,Infirmier,847
+50,Kinésithérapeute,419
+50,Médecin généraliste,354
+51,Chirurgien-dentiste,358
+51,Infirmier,640
+51,Kinésithérapeute,584
+51,Médecin généraliste,518
+52,Chirurgien-dentiste,73
+52,Infirmier,241
+52,Kinésithérapeute,109
+52,Médecin généraliste,110
+53,Chirurgien-dentiste,93
+53,Infirmier,340
+53,Kinésithérapeute,215
+53,Médecin généraliste,184
+54,Chirurgien-dentiste,466
+54,Infirmier,927
+54,Kinésithérapeute,765
+54,Médecin généraliste,701
+55,Chirurgien-dentiste,78
+55,Infirmier,264
+55,Kinésithérapeute,126
+55,Médecin généraliste,139
+56,Chirurgien-dentiste,492
+56,Infirmier,1580
+56,Kinésithérapeute,1197
+56,Médecin généraliste,812
+57,Chirurgien-dentiste,626
+57,Infirmier,1704
+57,Kinésithérapeute,1045
+57,Médecin généraliste,822
+58,Chirurgien-dentiste,102
+58,Infirmier,292
+58,Kinésithérapeute,149
+58,Médecin généraliste,165
+59,Chirurgien-dentiste,1506
+59,Infirmier,4207
+59,Kinésithérapeute,3996
+59,Médecin généraliste,2530
+60,Chirurgien-dentiste,351
+60,Infirmier,849
+60,Kinésithérapeute,506
+60,Médecin généraliste,530
+61,Chirurgien-dentiste,87
+61,Infirmier,418
+61,Kinésithérapeute,186
+61,Médecin généraliste,174
+62,Chirurgien-dentiste,722
+62,Infirmier,2679
+62,Kinésithérapeute,1855
+62,Médecin généraliste,1206
+63,Chirurgien-dentiste,480
+63,Infirmier,1079
+63,Kinésithérapeute,1015
+63,Médecin généraliste,611
+64,Chirurgien-dentiste,614
+64,Infirmier,1604
+64,Kinésithérapeute,1963
+64,Médecin généraliste,871
+65,Chirurgien-dentiste,170
+65,Infirmier,617
+65,Kinésithérapeute,415
+65,Médecin généraliste,198
+66,Chirurgien-dentiste,323
+66,Infirmier,1355
+66,Kinésithérapeute,1349
+66,Médecin généraliste,509
+67,Chirurgien-dentiste,956
+67,Infirmier,1736
+67,Kinésithérapeute,2251
+67,Médecin généraliste,1306
+68,Chirurgien-dentiste,454
+68,Infirmier,940
+68,Kinésithérapeute,799
+68,Médecin généraliste,605
+69,Chirurgien-dentiste,1416
+69,Infirmier,2622
+69,Kinésithérapeute,3076
+69,Médecin généraliste,1955
+70,Chirurgien-dentiste,69
+70,Infirmier,334
+70,Kinésithérapeute,172
+70,Médecin généraliste,187
+71,Chirurgien-dentiste,243
+71,Infirmier,871
+71,Kinésithérapeute,483
+71,Médecin généraliste,331
+72,Chirurgien-dentiste,197
+72,Infirmier,562
+72,Kinésithérapeute,412
+72,Médecin généraliste,338
+73,Chirurgien-dentiste,312
+73,Infirmier,618
+73,Kinésithérapeute,1014
+73,Médecin généraliste,594
+74,Chirurgien-dentiste,642
+74,Infirmier,674
+74,Kinésithérapeute,1453
+74,Médecin généraliste,824
+75,Chirurgien-dentiste,2446
+75,Infirmier,1556
+75,Kinésithérapeute,4039
+75,Médecin généraliste,2722
+76,Chirurgien-dentiste,522
+76,Infirmier,1628
+76,Kinésithérapeute,1157
+76,Médecin généraliste,1144
+77,Chirurgien-dentiste,681
+77,Infirmier,1245
+77,Kinésithérapeute,1086
+77,Médecin généraliste,1060
+78,Chirurgien-dentiste,938
+78,Infirmier,879
+78,Kinésithérapeute,1346
+78,Médecin généraliste,958
+79,Chirurgien-dentiste,145
+79,Infirmier,440
+79,Kinésithérapeute,247
+79,Médecin généraliste,279
+80,Chirurgien-dentiste,196
+80,Infirmier,798
+80,Kinésithérapeute,548
+80,Médecin généraliste,553
+81,Chirurgien-dentiste,224
+81,Infirmier,1012
+81,Kinésithérapeute,590
+81,Médecin généraliste,311
+82,Chirurgien-dentiste,148
+82,Infirmier,593
+82,Kinésithérapeute,373
+82,Médecin généraliste,197
+83,Chirurgien-dentiste,897
+83,Infirmier,3006
+83,Kinésithérapeute,2560
+83,Médecin généraliste,1169
+84,Chirurgien-dentiste,331
+84,Infirmier,1142
+84,Kinésithérapeute,839
+84,Médecin généraliste,479
+85,Chirurgien-dentiste,356
+85,Infirmier,776
+85,Kinésithérapeute,773
+85,Médecin généraliste,484
+86,Chirurgien-dentiste,182
+86,Infirmier,459
+86,Kinésithérapeute,396
+86,Médecin généraliste,415
+87,Chirurgien-dentiste,157
+87,Infirmier,757
+87,Kinésithérapeute,506
+87,Médecin généraliste,381
+88,Chirurgien-dentiste,187
+88,Infirmier,493
+88,Kinésithérapeute,315
+88,Médecin généraliste,299
+89,Chirurgien-dentiste,123
+89,Infirmier,443
+89,Kinésithérapeute,257
+89,Médecin généraliste,209
+90,Chirurgien-dentiste,63
+90,Infirmier,186
+90,Kinésithérapeute,113
+90,Médecin généraliste,97
+91,Chirurgien-dentiste,602
+91,Infirmier,1066
+91,Kinésithérapeute,984
+91,Médecin généraliste,763
+92,Chirurgien-dentiste,1208
+92,Infirmier,840
+92,Kinésithérapeute,1932
+92,Médecin généraliste,1167
+93,Chirurgien-dentiste,518
+93,Infirmier,1060
+93,Kinésithérapeute,967
+93,Médecin généraliste,896
+94,Chirurgien-dentiste,748
+94,Infirmier,980
+94,Kinésithérapeute,1352
+94,Médecin généraliste,908
+95,Chirurgien-dentiste,603
+95,Infirmier,1016
+95,Kinésithérapeute,1002
+95,Médecin généraliste,803
+971,Chirurgien-dentiste,254
+971,Infirmier,1159
+971,Kinésithérapeute,1004
+971,Médecin généraliste,333
+972,Chirurgien-dentiste,234
+972,Infirmier,1140
+972,Kinésithérapeute,843
+972,Médecin généraliste,338
+973,Chirurgien-dentiste,71
+973,Infirmier,337
+973,Kinésithérapeute,126
+973,Médecin généraliste,108
+974,Chirurgien-dentiste,630
+974,Infirmier,1954
+974,Kinésithérapeute,2001
+974,Médecin généraliste,940
+976,Chirurgien-dentiste,13
+976,Infirmier,156
+976,Kinésithérapeute,78
+976,Médecin généraliste,40

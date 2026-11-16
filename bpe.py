@@ -1,10 +1,13 @@
 """Partie A - Comptage des lieux de soins dans la BPE 2025."""
 
 from pathlib import Path
+import shutil
+from urllib.request import urlopen
 import pandas as pd
 
 DOSSIER = Path(__file__).resolve().parent
-FICHIER_BPE = DOSSIER / "donnees" / "BPE25.parquet"
+FICHIER_BPE = DOSSIER / "data" / "BPE25.parquet"
+URL_BPE = "https://www.insee.fr/fr/statistiques/fichier/8217525/BPE25.parquet"
 RESULTATS = DOSSIER / "resultats"
 
 # Codes des quatre professions de santé retenues (nomenclature BPE 2025).
@@ -16,12 +19,37 @@ PROFESSIONS = {
 }
 
 
+def est_parquet(chemin):
+    """Vérifie les signatures de début et de fin d'un fichier Parquet."""
+    if not chemin.exists() or chemin.stat().st_size < 8:
+        return False
+    with chemin.open("rb") as fichier:
+        if fichier.read(4) != b"PAR1":
+            return False
+        fichier.seek(-4, 2)
+        return fichier.read(4) == b"PAR1"
+
+
+def telecharger_bpe():
+    """Télécharge la BPE Insee dans le dossier data/ après validation."""
+    FICHIER_BPE.parent.mkdir(parents=True, exist_ok=True)
+    temporaire = FICHIER_BPE.with_suffix(".parquet.tmp")
+    try:
+        with urlopen(URL_BPE, timeout=60) as reponse, temporaire.open("wb") as sortie:
+            shutil.copyfileobj(reponse, sortie)
+        if not est_parquet(temporaire):
+            raise ValueError("La réponse téléchargée n'est pas un fichier Parquet valide.")
+        temporaire.replace(FICHIER_BPE)
+    except Exception as erreur:
+        temporaire.unlink(missing_ok=True)
+        raise RuntimeError(f"Impossible de télécharger la BPE depuis {URL_BPE}.") from erreur
+
+
 def lire_bpe():
     """Lit uniquement le département et le type d'équipement du Parquet."""
-    if not FICHIER_BPE.exists():
-        raise FileNotFoundError(
-            "BPE25.parquet est absent. Place le fichier dans le dossier donnees/."
-        )
+    if not est_parquet(FICHIER_BPE):
+        print("Fichier BPE absent ou invalide : téléchargement depuis l'Insee...")
+        telecharger_bpe()
     return pd.read_parquet(FICHIER_BPE, columns=["DEP", "TYPEQU"])
 
 

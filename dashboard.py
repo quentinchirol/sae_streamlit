@@ -2,16 +2,23 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from urllib.request import urlopen
 
+import folium
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from streamlit_folium import st_folium
 from scipy import stats
 
 BASE_DIR = Path(__file__).resolve().parent
 FICHIER_ANALYSE = BASE_DIR / "resultats" / "analyse_departements.csv"
+URL_GEOJSON_DEPARTEMENTS = (
+    "https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-avec-outre-mer.geojson"
+)
 COULEURS = {
     "encre": "#18343B",
     "petrole": "#146A78",
@@ -202,6 +209,179 @@ def graphique_relation(donnees: pd.DataFrame, departement_focus: str):
     return styliser(fig)
 
 
+def iterer_coordonnees_geojson(coordonnees):
+    if (
+        isinstance(coordonnees, list)
+        and len(coordonnees) == 2
+        and all(isinstance(valeur, (int, float)) for valeur in coordonnees)
+    ):
+        yield float(coordonnees[0]), float(coordonnees[1])
+        return
+
+    if isinstance(coordonnees, list):
+        for element in coordonnees:
+            yield from iterer_coordonnees_geojson(element)
+
+
+@st.cache_data(show_spinner=False)
+def charger_geojson_departements() -> dict:
+    with urlopen(URL_GEOJSON_DEPARTEMENTS, timeout=20) as reponse:
+        geojson = json.load(reponse)
+
+    if not isinstance(geojson, dict) or not isinstance(geojson.get("features"), list):
+        raise ValueError("Le fichier géographique des départements est invalide.")
+    for feature in geojson["features"]:
+        if (
+            not isinstance(feature, dict)
+            or not feature.get("properties", {}).get("code")
+            or not feature.get("geometry", {}).get("coordinates")
+        ):
+            raise ValueError("Une géométrie départementale est incomplète.")
+    return geojson
+
+
+def afficher_carte_offre(
+    donnees: pd.DataFrame,
+    region: str,
+    departement_focus: str,
+) -> None:
+    donnees_carte = donnees.copy()
+
+    if donnees_carte.empty:
+        st.warning("Aucun département n’est disponible pour ce périmètre.")
+        return
+
+    try:
+        geojson = charger_geojson_departements()
+    except (OSError, ValueError) as erreur:
+        st.error(f"Impossible de charger les contours des départements : {erreur}")
+        return
+
+    donnees_par_departement = {
+        str(ligne.code_dep): ligne
+        for ligne in donnees_carte.itertuples(index=False)
+    }
+    densites = donnees_carte["densite_100k"].dropna()
+    densite_min = densites.min() if not densites.empty else 0
+    densite_max = densites.max() if not densites.empty else 0
+    features_carte = []
+    for feature in geojson["features"]:
+        code = str(feature["properties"]["code"])
+        ligne = donnees_par_departement.get(code)
+        if ligne is None and region != "Toutes les régions":
+            continue
+        densite = ligne.densite_100k if ligne is not None else None
+        nb_lieux = ligne.nb_lieux if ligne is not None else None
+        proprietes = {
+            **feature["properties"],
+            "densite_affichee": (
+                f"{densite:.1f}" if pd.notna(densite) else "Non disponible"
+            ),
+            "lieux_affiches": (
+                f"{nb_lieux:,.0f}".replace(",", " ")
+                if pd.notna(nb_lieux)
+                else "Non disponible"
+            ),
+        }
+        features_carte.append({**feature, "properties": proprietes})
+
+    if not features_carte:
+        st.warning("Aucun contour départemental n’est disponible pour ce périmètre.")
+        return
+
+    carte = folium.Map(
+        location=[46.6, 2.4],
+        zoom_start=5,
+        tiles="OpenStreetMap",
+        control_scale=True,
+    )
+
+    def styliser_departement(feature):
+        code = str(feature["properties"]["code"])
+        ligne = donnees_par_departement.get(code)
+        densite = ligne.densite_100k if ligne is not None else None
+        if densite is None or pd.isna(densite) or densite_max <= 0:
+            couleur = "#E5EAEC"
+            opacite = 0.35
+        else:
+            ratio = min(max(densite / densite_max, 0), 1)
+            couleur = "#{:02X}{:02X}{:02X}".format(
+                *(
+                    round(clair + (fonce - clair) * ratio)
+                    for clair, fonce in zip((191, 232, 226), (20, 106, 120))
+                )
+            )
+            opacite = 0.4 + 0.5 * ratio
+
+        selectionne = code == departement_focus
+        return {
+            "fillColor": couleur,
+            "fillOpacity": opacite,
+            "color": COULEURS["ambre"] if selectionne else "#687A80",
+            "weight": 2.5 if selectionne else 0.8,
+        }
+
+    folium.GeoJson(
+        {"type": "FeatureCollection", "features": features_carte},
+        style_function=styliser_departement,
+        tooltip=folium.GeoJsonTooltip(
+            fields=["nom", "densite_affichee", "lieux_affiches"],
+            aliases=["Département :", "Densité / 100 000 hab. :", "Lieux BPE :"],
+            sticky=True,
+        ),
+    ).add_to(carte)
+
+    coordonnees = [
+        point
+        for feature in features_carte
+        for point in iterer_coordonnees_geojson(
+            feature["geometry"]["coordinates"]
+        )
+    ]
+    longitudes, latitudes = zip(*coordonnees)
+    carte.fit_bounds(
+        [
+            [min(latitudes), min(longitudes)],
+            [max(latitudes), max(longitudes)],
+        ],
+        padding=(24, 24),
+    )
+
+    legende = f"""
+    <div style="
+        position: fixed; bottom: 28px; right: 16px; z-index: 9999;
+        width: 230px; padding: 10px 12px; background: white;
+        border: 1px solid #AAB7BB; border-radius: 5px;
+        box-shadow: 0 1px 5px rgba(0,0,0,.25); font-size: 12px;
+    ">
+      <strong>Densité (lieux / 100 000 hab.)</strong>
+      <div style="
+        height: 12px; margin: 7px 0 3px;
+        background: linear-gradient(to right, #BFE8E2, #146A78);
+      "></div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>{densite_min:.1f}</span><span>{densite_max:.1f}</span>
+      </div>
+      <div style="margin-top: 5px;">Gris : donnée indisponible</div>
+      <div>
+        <span style="
+          display: inline-block; width: 11px; height: 11px;
+          border: 2px solid {COULEURS['ambre']}; vertical-align: middle;
+        "></span>
+        Département sélectionné
+      </div>
+    </div>
+    """
+    carte.get_root().html.add_child(folium.Element(legende))
+
+    st_folium(carte, height=500, use_container_width=True, returned_objects=[])
+    st.caption(
+        "Chaque département est coloré selon la densité observée de la profession sélectionnée. "
+        "La teinte va du clair (densité faible) au foncé (densité élevée) ; les zones grises "
+        "n’ont pas de valeur disponible. Survolez un département pour voir les détails."
+    )
+
+
 def afficher_dashboard() -> None:
     st.set_page_config(page_title="SantéScope", page_icon="S", layout="wide")
     st.markdown(
@@ -340,6 +520,7 @@ def afficher_dashboard() -> None:
         if observee.empty:
             st.warning("Aucune donnée BPE observée pour ce périmètre.")
         else:
+            afficher_carte_offre(offre, region, departement_focus)
             st.plotly_chart(
                 graphique_densites(observee, departement_focus),
                 width="stretch",

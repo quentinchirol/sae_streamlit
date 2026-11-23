@@ -1,9 +1,58 @@
-# SantéScope
+# 🩺 SantéScope
 
-SantéScope est un tableau de bord Streamlit qui explore les liens entre la
-concentration de la population communale et l'offre de soins observée dans les
-départements français. Le traitement utilise les populations légales de l'Insee
-2023 et la Base permanente des équipements (BPE) 2025.
+### Population, territoires et inégalités d'offre de soins en France
+
+**Projet Streamlit · BUT 3 Science des Données · Parcours VCOD · 2026**
+
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-Application-FF4B4B?logo=streamlit&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-Traitement_des_donn%C3%A9es-150458?logo=pandas&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly-Visualisation-3F4F75?logo=plotly&logoColor=white)
+![Statut](https://img.shields.io/badge/Statut-En_d%C3%A9veloppement-F4B544)
+
+*Des données publiques pour mieux comprendre les disparités territoriales de santé.*
+
+**[Problématique](#-1-problématique-et-objectifs) · [Sources](#-2-sources-de-données) · [Équipe](#-4-organisation-du-travail-à-quatre) · [Installation](#-6-installation-et-lancement) · [Dashboard](#-9-dashboard-streamlit) · [Qualité](#-11-tests-et-critères-de-validation)**
+
+</div>
+
+---
+
+> **État du projet : en développement.** Ce README constitue la spécification de travail de l'équipe. Les étapes, pages ou fonctionnalités décrites comme prévues ne sont pas présentées comme déjà implémentées. Date de soutenance : **30 novembre 2026** ; dépôt sur **Updago avant la soutenance**.
+
+## 🎯 1. Problématique et objectifs
+
+### Problématique retenue
+
+> **Dans quelle mesure la répartition géographique de la population est-elle associée aux inégalités d'offre de soins entre les départements français ?**
+
+Nous cherchons à déterminer si les départements dont la population est concentrée dans quelques communes présentent des caractéristiques d'offre et d'accessibilité aux soins différentes de celles des départements dont la population est plus dispersée.
+
+**Question scientifique :** nous étudions des **associations statistiques**, pas des relations de causalité. Le verbe « influencer » ne pourra être employé comme conclusion causale sur la seule base de ces données transversales.
+
+### Quatre axes de recherche
+
+| Axe | Question | Résultat attendu |
+|---|---|---|
+| **A1. Démographie** | La population est-elle concentrée dans quelques communes ou dispersée ? | Indice de concentration, part de population des communes dominantes, comparaisons régionales |
+| **A2. Offre de soins** | Quels départements disposent de davantage de lieux d'exercice rapportés à leur population ? | Densités BPE par profession, carte et classements |
+| **A3. Accessibilité** | Une densité élevée implique-t-elle nécessairement une bonne accessibilité ? | Confrontation **BPE** / **APL DREES**, étude des écarts |
+| **A4. Relations territoriales** | La concentration démographique est-elle associée à l'offre ou à l'APL ? | Nuages de points, coefficients de corrélation, comparaison de profils |
+
+### Hypothèses à tester, non présumées vraies
+
+- **H1** — Les départements dont la population est plus concentrée ont des densités de lieux d'exercice différentes des départements moins concentrés.
+- **H2** — La densité départementale BPE et l'accessibilité potentielle localisée (APL) ne classent pas nécessairement les départements de la même façon.
+- **H3** — La relation entre concentration démographique et accès aux soins dépend de la profession étudiée.
+
+### Périmètre
+
+- **Échelle de restitution :** département ; **échelle de préparation :** commune/arrondissement municipal lorsque nécessaire.
+- **Population :** Insee, référence **2023** ; **offre de soins :** BPE **2025** ; **accessibilité :** DREES-APL **2024**.
+- **Champ géographique initial :** les **100 départements présents dans le fichier Insee fourni**, soit 96 départements métropolitains et quatre départements ultramarins. **Mayotte (976) n'y figure pas.** Toute réduction ultérieure du champ après jointure sera mesurée et documentée.
+- **Professions du noyau de l'analyse :** médecins généralistes, infirmiers, masseurs-kinésithérapeutes, chirurgiens-dentistes. Les autres professions de la BPE sont envisageables en extension, mais ne disposent pas toutes d'APL comparable.
+
+---
 
 ## Fonctionnalités disponibles
 

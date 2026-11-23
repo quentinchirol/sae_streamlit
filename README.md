@@ -30,16 +30,71 @@ pas ces valeurs.
 │   ├── donnees_communes.csv
 │   ├── donnees_departements.csv
 │   └── BPE25.parquet             # téléchargé automatiquement si absent
-├── resultats/                    # fichiers produits par le traitement
+├── resultats/                    # sept CSV générés par traitement.py
+├── config.toml                   # fichier présent à la racine du projet
 ├── dashboard.py                  # application Streamlit
-├── traitement.py                 # préparation et contrôles des données
-├── __init__.py                   # préparation si nécessaire, puis lancement
+├── traitement.py                 # préparation, jointures et contrôles
+├── __init__.py                   # lanceur : préparation si nécessaire, puis dashboard
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
+Les dossiers locaux `.venv/` et `__pycache__/` peuvent aussi apparaître après
+l'installation et l'exécution ; ils ne contiennent pas de sources du projet et
+sont ignorés par Git.
+
 Les codes département et commune sont conservés comme chaînes afin de préserver
 les zéros initiaux et les codes tels que `2A` et `2B`.
+
+## Flux réel des données
+
+```mermaid
+flowchart TD
+    A[data/donnees_departements.csv] --> B[traitement.py : lire_donnees_population]
+    C[data/donnees_communes.csv] --> B
+    B --> D[Regroupement des arrondissements de Paris, Lyon et Marseille]
+    D --> E[Indicateurs démographiques par département]
+    E --> F[resultats/demographie_departements.csv]
+    E --> G[resultats/communes_preparees.csv]
+    E --> H[resultats/controle_population.csv]
+
+    I[data/BPE25.parquet] --> J[traitement.py : compter_lieux_bpe]
+    K[Téléchargement Insee si le Parquet manque ou est invalide] --> I
+    J --> L[resultats/comptages_bpe.csv]
+    J --> M[resultats/couverture_bpe.csv]
+
+    F --> N[Jointure par code_dep et profession]
+    L --> N
+    M --> N
+    N --> O[resultats/analyse_departements.csv]
+    N --> P[resultats/bpe_sans_population.csv]
+
+    O --> Q[__init__.py : vérifie les sept résultats]
+    P --> Q
+    M --> Q
+    L --> Q
+    H --> Q
+    G --> Q
+    F --> Q
+    Q --> R[dashboard.py : Streamlit]
+    O --> R
+    R --> S[Plotly : graphiques]
+    R --> T[Folium : carte choroplèthe]
+    T --> U[GeoJSON des départements et tuiles OpenStreetMap]
+```
+
+Le fonctionnement normal commence par `__init__.py`. Il lance l'ensemble du
+pipeline si au moins un des sept résultats attendus manque ; sinon, il conserve
+les résultats présents et démarre directement le dashboard. Le pipeline complet
+lit les deux CSV Insee, télécharge et traite la BPE si nécessaire, puis réalise
+les jointures et contrôles avant d'écrire les fichiers dans `resultats/`.
+
+Le dashboard ne relit pas les CSV sources : il charge
+`resultats/analyse_departements.csv`. La carte récupère les contours GeoJSON à
+la demande ; il n'existe pas de dossier local `data/geo/` dans la structure
+actuelle. Le cache Streamlit évite de recharger les données analytiques à chaque
+interaction.
 
 ## Prérequis et installation
 
@@ -105,25 +160,39 @@ La source communale fournie contient 100 départements et ne comprend pas
 Mayotte. Les lieux BPE des territoires sans population correspondante sont
 signalés dans les résultats, au lieu d'être fusionnés silencieusement.
 
-## Exécuter le traitement
+## Lancer tout le projet
 
-Pour recalculer tous les résultats à partir des données d'entrée :
+Après l'installation, la commande normale pour tout lancer est :
+
+```bash
+python __init__.py
+```
+
+Lance cette commande depuis la racine du projet, avec l'environnement virtuel
+activé. Le script `__init__.py` vérifie les sept fichiers attendus dans
+`resultats/` :
+
+- si un ou plusieurs résultats manquent, il exécute tout le traitement ;
+- sinon, il réutilise les résultats déjà présents ;
+- puis il lance le dashboard Streamlit.
+
+Le traitement lit les populations départementales et communales, regroupe les
+arrondissements municipaux de Paris, Lyon et Marseille, vérifie les populations
+et nombres de communes, compte les lieux BPE par département et profession,
+puis calcule les densités.
+
+Il s'arrête explicitement en cas de codes de profession attendus absents, de
+doublons ou d'écarts dans les contrôles de population et de communes.
+
+### Recalculer les données manuellement
+
+Après une modification des fichiers d'entrée, ou pour forcer un recalcul, lance
+le traitement puis le lanceur principal :
 
 ```bash
 python traitement.py
+python __init__.py
 ```
-
-Le pipeline effectue les étapes suivantes :
-
-1. Lit les populations départementales et communales.
-2. Regroupe les arrondissements municipaux de Paris, Lyon et Marseille pour
-   calculer les indicateurs à l'échelle communale.
-3. Vérifie les populations et le nombre de communes entre les deux niveaux.
-4. Compte les lieux BPE par département et profession.
-5. Joint les comptages aux indicateurs démographiques et calcule les densités.
-
-Le traitement s'arrête explicitement en cas de codes de profession attendus
-absents, de doublons ou d'écarts dans les contrôles de population et de communes.
 
 ### Fichiers produits
 
@@ -138,27 +207,6 @@ Les résultats sont écrits dans `resultats/` :
 | `couverture_bpe.csv` | Départements présents dans la BPE |
 | `bpe_sans_population.csv` | Comptages BPE sans département correspondant dans les données de population |
 | `analyse_departements.csv` | Table finale utilisée par le tableau de bord |
-
-## Lancer l'application
-
-La commande recommandée prépare les résultats s'il en manque, puis lance
-Streamlit :
-
-```bash
-python __init__.py
-```
-
-Ce lanceur vérifie la présence des sept fichiers de résultats. Si l'un d'eux
-manque, il relance le pipeline complet ; sinon, il réutilise les fichiers
-existants. Pour forcer le recalcul après une modification des données d'entrée,
-exécute d'abord `python traitement.py`.
-
-Il est aussi possible de lancer directement le tableau de bord, si
-`resultats/analyse_departements.csv` existe :
-
-```bash
-python -m streamlit run dashboard.py
-```
 
 Streamlit affiche l'adresse locale, habituellement `http://localhost:8501`.
 

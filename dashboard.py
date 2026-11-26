@@ -206,7 +206,39 @@ def graphique_relation(donnees: pd.DataFrame, departement_focus: str):
             name="Tendance descriptive",
             line={"color": COULEURS["ambre"], "dash": "dash"},
         )
-    return styliser(fig)
+    fig = styliser(fig)
+    pops_valides = valeurs["population_2023"].dropna()
+    pops_valides = pops_valides[pops_valides > 0]
+    if not pops_valides.empty:
+        pop_max = float(pops_valides.max())
+        repere_pops = sorted(
+            {
+                float(pops_valides.min()),
+                float(pops_valides.median()),
+                pop_max,
+            }
+        )
+        for idx, pop_val in enumerate(repere_pops):
+            diametre = max(4.0, 22.0 * np.sqrt(pop_val / pop_max))
+            fig.add_scatter(
+                x=[None],
+                y=[None],
+                mode="markers",
+                name=f"{pop_val:,.0f}".replace(",", " "),
+                legendgroup="population",
+                legendgrouptitle_text="Population (hab.)" if idx == 0 else None,
+                marker={
+                    "size": diametre,
+                    "color": COULEURS["petrole"],
+                    "opacity": 0.7,
+                },
+                showlegend=True,
+            )
+    fig.update_layout(
+        margin={"t": 68},
+        legend={"itemsizing": "trace"},
+    )
+    return fig
 
 
 def iterer_coordonnees_geojson(coordonnees):
@@ -290,8 +322,8 @@ def afficher_carte_offre(
         return
 
     carte = folium.Map(
-        location=[46.6, 2.4],
-        zoom_start=5,
+        location=[46.603354, 1.888334],
+        zoom_start=6,
         tiles="OpenStreetMap",
         control_scale=True,
     )
@@ -487,25 +519,57 @@ def afficher_dashboard() -> None:
                 key="population-concentration",
             )
         with droite:
+            fig_dispersion = px.scatter(
+                population_region,
+                x="pct_plus_grande_commune",
+                y="pct_petites_communes",
+                size="population_2023",
+                size_max=22,
+                hover_name="nom_dep",
+                hover_data={"code_dep": True, "nb_communes": True},
+                labels={
+                    "pct_plus_grande_commune": "Population dans la plus grande commune (%)",
+                    "pct_petites_communes": "Communes de moins de 500 habitants (%)",
+                },
+                color_discrete_sequence=[COULEURS["turquoise"]],
+            ).update_layout(
+                height=430,
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                legend={
+                    "title_text": "Population (hab.)",
+                    "itemsizing": "trace",
+                    "itemclick": False,
+                    "itemdoubleclick": False,
+                },
+            )
+            pops_valides = population_region["population_2023"].dropna()
+            pops_valides = pops_valides[pops_valides > 0]
+            if not pops_valides.empty:
+                pop_max = float(pops_valides.max())
+                repere_pops = sorted(
+                    {
+                        float(pops_valides.min()),
+                        float(pops_valides.median()),
+                        pop_max,
+                    }
+                )
+                for pop_val in repere_pops:
+                    diametre = max(4.0, 22.0 * np.sqrt(pop_val / pop_max))
+                    fig_dispersion.add_scatter(
+                        x=[None],
+                        y=[None],
+                        mode="markers",
+                        name=f"{pop_val:,.0f}".replace(",", " "),
+                        marker={
+                            "size": diametre,
+                            "color": COULEURS["turquoise"],
+                            "opacity": 0.7,
+                        },
+                        showlegend=True,
+                    )
             st.plotly_chart(
-                px.scatter(
-                    population_region,
-                    x="pct_plus_grande_commune",
-                    y="pct_petites_communes",
-                    size="population_2023",
-                    size_max=22,
-                    hover_name="nom_dep",
-                    hover_data={"code_dep": True, "nb_communes": True},
-                    labels={
-                        "pct_plus_grande_commune": "Population dans la plus grande commune (%)",
-                        "pct_petites_communes": "Communes de moins de 500 habitants (%)",
-                    },
-                    color_discrete_sequence=[COULEURS["turquoise"]],
-                ).update_layout(
-                    height=430,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                ),
+                fig_dispersion,
                 width="stretch",
                 config={"displayModeBar": False},
                 key="population-dispersion",
@@ -532,10 +596,6 @@ def afficher_dashboard() -> None:
             width="stretch",
             config={"displayModeBar": False},
             key="offer-professions",
-        )
-        st.info(
-            "APL DREES indisponible : aucune valeur simulée n'est affichée. "
-            "La comparaison BPE–APL sera activée lorsque les données APL réelles seront intégrées."
         )
 
     with tab_relation:

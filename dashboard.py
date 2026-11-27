@@ -425,6 +425,14 @@ def afficher_dashboard() -> None:
             background: #FFFFFF; border-top: 3px solid {COULEURS['turquoise']};
             padding: 12px 15px; border-radius: 4px;
         }}
+        div[data-testid="stMetricValue"] > div {{
+            font-size: clamp(1.1rem, 1.8vw, 1.75rem);
+            white-space: normal;
+            word-break: break-word;
+        }}
+        div[data-testid="stMetricLabel"] p {{
+            white-space: normal;
+        }}
         </style>
         """,
         unsafe_allow_html=True,

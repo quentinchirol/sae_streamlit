@@ -492,14 +492,14 @@ def afficher_dashboard() -> None:
         with gauche:
             st.plotly_chart(
                 graphique_densites(observee, departement_focus),
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="overview-density",
             )
         with droite:
             st.plotly_chart(
                 graphique_professions(base_region),
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="overview-professions",
             )
@@ -514,7 +514,7 @@ def afficher_dashboard() -> None:
         with gauche:
             st.plotly_chart(
                 graphique_concentration(population_region),
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="population-concentration",
             )
@@ -570,7 +570,7 @@ def afficher_dashboard() -> None:
                     )
             st.plotly_chart(
                 fig_dispersion,
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="population-dispersion",
             )
@@ -587,13 +587,13 @@ def afficher_dashboard() -> None:
             afficher_carte_offre(offre, region, departement_focus)
             st.plotly_chart(
                 graphique_densites(observee, departement_focus),
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="offer-density",
             )
         st.plotly_chart(
             graphique_professions(base_region),
-            width="stretch",
+            use_container_width=True,
             config={"displayModeBar": False},
             key="offer-professions",
         )
@@ -617,7 +617,7 @@ def afficher_dashboard() -> None:
             c2.metric("Spearman · hors Paris", "Indisponible" if pd.isna(correlation_sans_paris) else f"{correlation_sans_paris:.2f}")
             st.plotly_chart(
                 graphique_relation(observee, departement_focus),
-                width="stretch",
+                use_container_width=True,
                 config={"displayModeBar": False},
                 key="territorial-relation",
             )
@@ -642,7 +642,7 @@ def afficher_dashboard() -> None:
         extrait = base_region[base_region["profession"] == profession][colonnes].sort_values(
             "code_dep"
         )
-        st.dataframe(extrait, width="stretch", hide_index=True)
+        st.dataframe(extrait, use_container_width=True, hide_index=True)
         st.download_button(
             "Télécharger le tableau CSV",
             data=extrait.to_csv(index=False, sep=";").encode("utf-8-sig"),
